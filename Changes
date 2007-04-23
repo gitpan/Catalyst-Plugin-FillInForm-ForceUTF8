@@ -1,0 +1,7 @@
+Revision history for Perl module Catalyst::Plugin::FillInForm::ForceUTF8
+
+0.02 Thu Nov  2 2006
+    - add auto config
+
+0.01 Thu Nov  2 2006
+    - original skeleton created with ExtUtils::ModuleMaker::TT
