@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Catalyst-Plugin-FillInForm-ForceUTF8
-version:             0.01
+version:             0.02
 abstract:            Module abstract (<= 44 characters) goes here
 license:             ~
 generated_by:        ExtUtils::MakeMaker version 6.32

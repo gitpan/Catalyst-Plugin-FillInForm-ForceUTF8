@@ -4,7 +4,7 @@ use strict;
 use NEXT;
 use HTML::FillInForm::ForceUTF8;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 NAME
 
@@ -25,6 +25,7 @@ Catalyst::Plugin::FillInForm::ForceUTF8 - FillInForm with utf8 flag for Catalyst
       # ....
 
     # you can abort automatic fillform with configuration.
+    # (default: 1, same as Catalyst::Plugin::FillInForm behavior)
     MyApp->config->(
         fillinform->{
             auto => 0
@@ -59,9 +60,25 @@ or invalid fields, and if C<Catalyst::Plugin::FormValidator>
 is being used. C<finalize> is called automatically by the
 Catalyst Engine; the end user will not have to call it
 directly. (In fact, it should never be called directly by the
-end user.)
+end user.) If you want to avoid this behavior, add auto => 0
+to config.
 
 =cut
+
+sub finalize {
+    my $c = shift;
+
+    my $config = $c->config->{fillinform};
+    my $auto = exists $config->{auto} ? $config->{auto} : 1;
+       
+    if ( $auto && $c->isa('Catalyst::Plugin::FormValidator') ) {
+        $c->fillform
+            if $c->form->has_missing
+            || $c->form->has_invalid
+            || $c->stash->{error};
+    }
+    return $c->NEXT::finalize(@_);
+}
 
 =head2 METHODS
 
@@ -96,7 +113,7 @@ in a built-in C<end> action in your application class.
 =cut
 
 sub fillform {
-    my $c    = shift;
+    my $c = shift;
     my $fdat = shift || $c->request->parameters;
 
     $c->response->output(
